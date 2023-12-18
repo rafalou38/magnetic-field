@@ -19,6 +19,8 @@ public:
     Magnet(float width, float height, float depth, float M0);
 
     void draw();
+    void drawVectorField();
+
     Vector3 computeMagneticField(float x, float y, float z);
     void computeFieldLines(float dz);
 };

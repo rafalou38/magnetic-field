@@ -9,15 +9,6 @@
 #include "camera.hpp"
 #include "magnet.hpp"
 
-void DrawArrow3D(Vector3 origin, Vector3 target, Color color)
-{
-
-    DrawLine3D(origin, target, color);
-    Vector3 diff = Vector3Subtract(target, origin);
-    float arrowScale = 0.1; // Clamp(0.1 * Vector3Length(diff), 0.1, 0.2);
-
-    DrawCylinderEx(target, Vector3Add(target, Vector3Scale(Vector3Normalize(diff), 2 * arrowScale)), arrowScale, 0, 8, color);
-}
 
 long long int frameCnt = 0;
 //------------------------------------------------------------------------------------
@@ -78,27 +69,11 @@ int main(void)
         if (frameCnt % 20 == 0)
             magnet.computeFieldLines((float)sin(GetTime() * 0.25f) * magnet.zb * 1.5f);
         // // for (float z = -20; z < 20; z += 5)
-        // for (float x = -20; x < 20; x += 1)
-        //     for (float y = -20; y < 20; y += 1)
-        //     {
-        //         Vector3 origin = {x + 0.001f, y + 0.001f, 0.001f};
-        //         // Vector3 origin = {x + 0.001f, y + 0.001f, ((float)sin(GetTime()*0.25f)* 5.0f - 2.5f) * magnet.zb};
-        //         Vector3 field = magnet.computeMagneticField(origin.x, origin.y, origin.z);
-
-        //         // DrawLine3D(origin, Vector3Add(origin, Vector3Scale(field, 100.0f)), PINK);
-        //         Vector3 target = {
-        //             field.x,
-        //             field.y,
-        //             field.z
-        //         };
-        //         float length = Vector3Length(target);
-        //         target = Vector3Scale(Vector3Normalize(target), std::max(0.1f, log(100.0f * length)));
-        //         // target = Vector3Scale(target, 60.0f);
-        //         DrawArrow3D(origin, Vector3Add(origin, target), target.y > 0 ? RED : BLUE);
-        //     }
-
+        
         // for (float z = -20; z < 20; x += 2)
         // std::cout << magnet.xb << std::endl;
+
+        magnet.drawVectorField();
 
         magnet.draw();
 

@@ -3,6 +3,8 @@
 
 #include "magnet.hpp"
 
+#include "utils.hpp"
+
 Magnet::Magnet(float width, float height, float depth, float M0)
 {
     x0 = 0;
@@ -24,6 +26,27 @@ void Magnet::draw()
     DrawCube(Vector3{x0, y0 - yb * 0.75f, z0}, xb * 2, yb * 0.5f, zb * 2, ColorAlpha(RED, 0.5f));
 
     DrawCubeWires(Vector3{x0, y0, z0}, xb * 2, yb * 2, zb * 2, GRAY);
+}
+
+void Magnet::drawVectorField()
+{
+    for (float x = -20; x < 20; x += 1)
+        for (float y = -20; y < 20; y += 1)
+        {
+            // Vector3 origin = {x + 0.001f, y + 0.001f, 0.001f};
+            Vector3 origin = {x + 0.001f, y + 0.001f, ((float)sin(GetTime()*0.25f)* 5.0f - 2.5f) * zb};
+            Vector3 field = computeMagneticField(origin.x, origin.y, origin.z);
+
+            // DrawLine3D(origin, Vector3Add(origin, Vector3Scale(field, 100.0f)), PINK);
+            Vector3 target = {
+                field.x,
+                field.y,
+                field.z};
+            float length = Vector3Length(target);
+            target = Vector3Scale(Vector3Normalize(target), std::max(0.1f, log(100.0f * length)));
+            // target = Vector3Scale(target, 60.0f);
+            DrawArrow3D(origin, Vector3Add(origin, target), target.y > 0 ? RED : BLUE);
+        }
 }
 
 Vector3 Magnet::computeMagneticField(float x, float y, float z)
@@ -70,7 +93,8 @@ void Magnet::computeFieldLines(float dz)
     fieldLines.clear();
     for (float x = -xb; x <= xb; x += 0.25)
     {
-        if(abs(x) < 0.1) continue;
+        if (abs(x) < 0.1)
+            continue;
         // fieldLines.push_back(new std::vector<Vector3>);
         std::vector<Vector3> line;
         Vector3 linePos = {x, yb + 0.01f, dz};
@@ -85,16 +109,17 @@ void Magnet::computeFieldLines(float dz)
 
             line.push_back(newPos);
 
-            if(abs(linePos.y + yb) < 0.5 && abs(linePos.x) <= xb and abs(linePos.z) <= zb) break;
+            if (abs(linePos.y + yb) < 0.5 && abs(linePos.x) <= xb and abs(linePos.z) <= zb)
+                break;
         }
 
         fieldLines.push_back(line);
     }
 
-
     for (float y = 0; y <= yb; y += 0.25)
     {
-        if(abs(y) < 0.1) continue;
+        if (abs(y) < 0.1)
+            continue;
         // fieldLines.push_back(new std::vector<Vector3>);
         std::vector<Vector3> line;
         Vector3 linePos = {xb + 0.01f, y, dz};
@@ -109,7 +134,8 @@ void Magnet::computeFieldLines(float dz)
 
             line.push_back(newPos);
 
-            if(abs(linePos.x) < xb) break;
+            if (abs(linePos.x) < xb)
+                break;
             // if(abs(linePos.y + yb) < 0.5 && abs(linePos.x) <= xb and abs(linePos.z) <= zb) break;
         }
 
@@ -117,7 +143,8 @@ void Magnet::computeFieldLines(float dz)
     }
     for (float y = 0; y <= yb; y += 0.25)
     {
-        if(abs(y) < 0.1) continue;
+        if (abs(y) < 0.1)
+            continue;
         // fieldLines.push_back(new std::vector<Vector3>);
         std::vector<Vector3> line;
         Vector3 linePos = {-xb - 0.01f, y, dz};
@@ -132,7 +159,8 @@ void Magnet::computeFieldLines(float dz)
 
             line.push_back(newPos);
 
-            if(abs(linePos.x) < xb) break;
+            if (abs(linePos.x) < xb)
+                break;
             // if(abs(linePos.y + yb) < 0.5 && abs(linePos.x) <= xb and abs(linePos.z) <= zb) break;
         }
 
