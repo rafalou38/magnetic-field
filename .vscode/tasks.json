@@ -1,0 +1,48 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build debug",
+            "type": "process",
+            "command": "${workspaceFolder}/../../../raylib/w64devkit/bin/make.exe",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "build release",
+            "type": "process",
+            "command": "make",
+            "args": [
+                "PLATFORM=PLATFORM_DESKTOP",
+                "PROJECT_NAME=gravitx",
+                "OBJS=gravitx.cpp"
+            ],
+            "windows": {
+                "command": "mingw32-make.exe",
+                "args": [
+                    "RAYLIB_PATH=f:/raylib/raylib",
+                    "PROJECT_NAME=gravitx",
+                    "OBJS=gravitx.cpp"
+                ],
+            },
+            "osx": {
+                "args": [
+                    "RAYLIB_PATH=<path_to_raylib>/raylib",
+                    "PROJECT_NAME=gravitx",
+                    "OBJS=gravitx.cpp"
+                ],
+            },
+            "group": "build",
+            "problemMatcher": [
+                "$gcc"
+            ]
+        }
+    ]
+}
