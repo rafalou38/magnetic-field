@@ -20,6 +20,7 @@ public:
 
     void draw();
     void drawVectorField();
+    void drawTeslaPlane(bool side);
 
     Vector3 computeMagneticField(float x, float y, float z);
     void computeFieldLines(float dz);

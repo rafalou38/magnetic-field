@@ -47,7 +47,7 @@ int main(void)
         camera.update(width, height);
 
         BeginDrawing();
-        ClearBackground(BLACK);
+        ClearBackground({22,22,22, 255});
 
         BeginMode3D(camera.camera);
 
@@ -56,24 +56,27 @@ int main(void)
         DrawLine3D({0, 0, 0}, {0, 100, 0}, ColorAlpha(GREEN, 0.3)); // Y
         DrawLine3D({0, 0, 0}, {0, 0, 100}, ColorAlpha(BLUE, 0.3));  // Z
 
-        for (auto line : magnet.fieldLines)
-        {
-            Vector3 prev = line[0];
-            for (Vector3 point : line)
-            {
-                DrawLine3D(prev, point, WHITE);
-                prev = point;
-            }
-        }
+        // for (auto line : magnet.fieldLines)
+        // {
+        //     Vector3 prev = line[0];
+        //     for (Vector3 point : line)
+        //     {
+        //         DrawLine3D(prev, point, WHITE);
+        //         prev = point;
+        //     }
+        // }
 
-        if (frameCnt % 20 == 0)
-            magnet.computeFieldLines((float)sin(GetTime() * 0.25f) * magnet.zb * 1.5f);
+        // if (frameCnt % 20 == 0)
+        //     magnet.computeFieldLines((float)sin(GetTime() * 0.25f) * magnet.zb * 1.5f);
         // // for (float z = -20; z < 20; z += 5)
         
         // for (float z = -20; z < 20; x += 2)
         // std::cout << magnet.xb << std::endl;
 
-        magnet.drawVectorField();
+        // magnet.drawVectorField();
+
+        magnet.drawTeslaPlane(false);
+        magnet.drawTeslaPlane(true);
 
         magnet.draw();
 

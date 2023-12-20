@@ -1,3 +1,6 @@
+#include <cmath>
+#include <iostream>
+
 #include "raylib.h"
 #include "raymath.h"
 
@@ -28,24 +31,70 @@ void Magnet::draw()
     DrawCubeWires(Vector3{x0, y0, z0}, xb * 2, yb * 2, zb * 2, GRAY);
 }
 
+
 void Magnet::drawVectorField()
 {
     for (float x = -20; x < 20; x += 1)
         for (float y = -20; y < 20; y += 1)
         {
             // Vector3 origin = {x + 0.001f, y + 0.001f, 0.001f};
-            Vector3 origin = {x + 0.001f, y + 0.001f, ((float)sin(GetTime()*0.25f)* 5.0f - 2.5f) * zb};
+            Vector3 origin = {x + 0.001f, y + 0.001f, ((float)sin(GetTime() * 0.25f) * 5.0f - 2.5f) * zb};
             Vector3 field = computeMagneticField(origin.x, origin.y, origin.z);
 
-            // DrawLine3D(origin, Vector3Add(origin, Vector3Scale(field, 100.0f)), PINK);
             Vector3 target = {
                 field.x,
                 field.y,
                 field.z};
             float length = Vector3Length(target);
             target = Vector3Scale(Vector3Normalize(target), std::max(0.1f, log(100.0f * length)));
-            // target = Vector3Scale(target, 60.0f);
             DrawArrow3D(origin, Vector3Add(origin, target), target.y > 0 ? RED : BLUE);
+        }
+}
+
+void Magnet::drawTeslaPlane(bool side)
+{
+    float d = 0.4f;
+    // float maxValue = 0.0f;
+    for (float i = -20; i < 20; i += d)
+        for (float j = -20; j < 20; j += d)
+        {
+            Vector3 origin;
+            if (side)
+                origin = {i + 0.001f, j + 0.001f, ((float)sin(GetTime() * 0.25f) * 2.5f) * zb};
+            else
+                origin = {i + 0.001f, ((float)sin(GetTime() * 0.25f) * 2.5f) * yb, j + 0.001f};
+
+            Vector3 field = computeMagneticField(origin.x, origin.y, origin.z);
+
+            Color fill = {0, 0, 0, 255};
+            if (side)
+            {
+                if (field.z < 0)
+                {
+                    float value = std::min(-field.z * 10, 1.0f);
+                    fill = lerpC(WHITE, BLUE, value);
+                }
+                else
+                {
+                    float value = std::min(field.z * 10, 1.0f);
+                    fill = lerpC(WHITE, RED, value);
+                }
+            }
+            else
+            {
+                if (field.y < 0)
+                {
+                    float value = std::min(-field.y * 10, 1.0f);
+                    fill = lerpC(WHITE, BLUE, value);
+                }
+                else
+                {
+                    float value = std::min(field.y * 10, 1.0f);
+                    fill = lerpC(WHITE, RED, value);
+                }
+            }
+
+            DrawCube(origin, d, d, d, fill);
         }
 }
 
@@ -95,16 +144,14 @@ void Magnet::computeFieldLines(float dz)
     {
         if (abs(x) < 0.1)
             continue;
-        // fieldLines.push_back(new std::vector<Vector3>);
+
         std::vector<Vector3> line;
         Vector3 linePos = {x, yb + 0.01f, dz};
         for (size_t i = 0; i < 10000; i++)
         {
-            // DrawPoint3D(linePos, WHITE);
             Vector3 field = computeMagneticField(linePos.x, linePos.y, linePos.z);
 
             Vector3 newPos = Vector3Add(linePos, Vector3Scale(Vector3Normalize(field), 0.5f));
-            // DrawLine3D(linePos, newPos, WHITE);
             linePos = newPos;
 
             line.push_back(newPos);
@@ -120,23 +167,19 @@ void Magnet::computeFieldLines(float dz)
     {
         if (abs(y) < 0.1)
             continue;
-        // fieldLines.push_back(new std::vector<Vector3>);
         std::vector<Vector3> line;
         Vector3 linePos = {xb + 0.01f, y, dz};
         for (size_t i = 0; i < 590; i++)
         {
-            // DrawPoint3D(linePos, WHITE);
             Vector3 field = computeMagneticField(linePos.x, linePos.y, linePos.z);
 
             Vector3 newPos = Vector3Add(linePos, Vector3Scale(Vector3Normalize(field), 0.5f));
-            // DrawLine3D(linePos, newPos, WHITE);
             linePos = newPos;
 
             line.push_back(newPos);
 
             if (abs(linePos.x) < xb)
                 break;
-            // if(abs(linePos.y + yb) < 0.5 && abs(linePos.x) <= xb and abs(linePos.z) <= zb) break;
         }
 
         fieldLines.push_back(line);
@@ -145,23 +188,20 @@ void Magnet::computeFieldLines(float dz)
     {
         if (abs(y) < 0.1)
             continue;
-        // fieldLines.push_back(new std::vector<Vector3>);
         std::vector<Vector3> line;
         Vector3 linePos = {-xb - 0.01f, y, dz};
         for (size_t i = 0; i < 590; i++)
         {
-            // DrawPoint3D(linePos, WHITE);
             Vector3 field = computeMagneticField(linePos.x, linePos.y, linePos.z);
 
             Vector3 newPos = Vector3Add(linePos, Vector3Scale(Vector3Normalize(field), 0.5f));
-            // DrawLine3D(linePos, newPos, WHITE);
+
             linePos = newPos;
 
             line.push_back(newPos);
 
             if (abs(linePos.x) < xb)
                 break;
-            // if(abs(linePos.y + yb) < 0.5 && abs(linePos.x) <= xb and abs(linePos.z) <= zb) break;
         }
 
         fieldLines.push_back(line);
