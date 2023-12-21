@@ -8,7 +8,7 @@
 #include "main.hpp"
 #include "camera.hpp"
 #include "magnet.hpp"
-
+#include "system.hpp"
 
 long long int frameCnt = 0;
 //------------------------------------------------------------------------------------
@@ -32,8 +32,12 @@ int main(void)
     height = GetRenderHeight();
 
     CustomCamera camera = CustomCamera(100);
-    Magnet magnet = Magnet(4, 10, 4, 1.0f);
-    magnet.computeFieldLines(0);
+
+    System system = System();
+    system.registerMagnet(Magnet({4, 0, 0}, {4, 10, 4}, 1.0f));
+    system.registerMagnet(Magnet({-4, 0, 0}, {4, 10, 4}, -1.0f));
+
+    // magnet.computeFieldLines(0);
 
     // Main game loop
     while (!WindowShouldClose())
@@ -47,7 +51,7 @@ int main(void)
         camera.update(width, height);
 
         BeginDrawing();
-        ClearBackground({22,22,22, 255});
+        ClearBackground({22, 22, 22, 255});
 
         BeginMode3D(camera.camera);
 
@@ -56,29 +60,30 @@ int main(void)
         DrawLine3D({0, 0, 0}, {0, 100, 0}, ColorAlpha(GREEN, 0.3)); // Y
         DrawLine3D({0, 0, 0}, {0, 0, 100}, ColorAlpha(BLUE, 0.3));  // Z
 
-        // for (auto line : magnet.fieldLines)
-        // {
-        //     Vector3 prev = line[0];
-        //     for (Vector3 point : line)
-        //     {
-        //         DrawLine3D(prev, point, WHITE);
-        //         prev = point;
-        //     }
-        // }
-
-        // if (frameCnt % 20 == 0)
-        //     magnet.computeFieldLines((float)sin(GetTime() * 0.25f) * magnet.zb * 1.5f);
         // // for (float z = -20; z < 20; z += 5)
-        
+
         // for (float z = -20; z < 20; x += 2)
         // std::cout << magnet.xb << std::endl;
 
-        // magnet.drawVectorField();
+        if (IsKeyPressed(KEY_SPACE))
+        {     
+            system.computeFieldLines(system.magnets[0].zb);
+        }
+        if (IsKeyDown(KEY_SPACE))
+        {
+            system.drawVectorField(system.magnets[0].zb);
 
-        magnet.drawTeslaPlane(false);
-        magnet.drawTeslaPlane(true);
+            // system.drawFieldLines();
+        }
+        else
+        {
+            system.drawTeslaPlane(false, system.magnets[0].yb);
+            system.drawTeslaPlane(true, system.magnets[0].yb);
+        }
 
-        magnet.draw();
+        system.drawMagnets();
+
+        // magnet.draw();
 
         EndMode3D();
 

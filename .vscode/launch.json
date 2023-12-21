@@ -42,10 +42,10 @@
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
-            "program": "${workspaceFolder}/gravitx",
+            "program": "${workspaceFolder}/field",
             "MIMode": "gdb",
             "windows": {
-              "program": "${workspaceFolder}/gravitx.exe",
+              "program": "${workspaceFolder}/field.exe",
               "miDebuggerPath": "C:/raylib/w64devkit/bin/gdb.exe"
             },
             "osx": {
