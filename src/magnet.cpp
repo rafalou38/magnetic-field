@@ -8,7 +8,7 @@
 
 #include "utils.hpp"
 
-Magnet::Magnet(Vector3 pos, Vector3 rect, float M0)
+Magnet::Magnet(Vector3 pos, Vector3 rect, float M0, bool flat)
 {
     x0 = pos.x;
     y0 = pos.y;
@@ -18,22 +18,43 @@ Magnet::Magnet(Vector3 pos, Vector3 rect, float M0)
     yb = rect.y / 2;
     zb = rect.z / 2;
 
-    this->M0 = M0;
+    this->flat = flat;
+    if (flat)
+        this->M0 = -M0;
+    else
+        this->M0 = M0;
 }
 
 void Magnet::draw()
 {
-    DrawCube(Vector3{x0, y0, z0}, xb * 2, yb, zb * 2, ColorAlpha(WHITE, 0.5f));
 
-    if (M0 > 0)
+    if (flat)
     {
-        DrawCube(Vector3{x0, y0 + yb * 0.75f, z0}, xb * 2, yb * 0.5f, zb * 2, ColorAlpha(BLUE, 0.5f));
-        DrawCube(Vector3{x0, y0 - yb * 0.75f, z0}, xb * 2, yb * 0.5f, zb * 2, ColorAlpha(RED, 0.5f));
+        DrawCube(Vector3{x0, y0, z0}, xb, yb * 2, zb * 2, ColorAlpha(WHITE, 0.5f));
+        if (M0 > 0)
+        {
+            DrawCube(Vector3{x0 + xb * 0.75f, y0, z0}, xb * 0.5f, yb * 2, zb * 2, ColorAlpha(BLUE, 0.5f));
+            DrawCube(Vector3{x0 - xb * 0.75f, y0, z0}, xb * 0.5f, yb * 2, zb * 2, ColorAlpha(RED, 0.5f));
+        }
+        else
+        {
+            DrawCube(Vector3{x0 + xb * 0.75f, y0, z0}, xb * 0.5f, yb * 2, zb * 2, ColorAlpha(RED, 0.5f));
+            DrawCube(Vector3{x0 - xb * 0.75f, y0, z0}, xb * 0.5f, yb * 2, zb * 2, ColorAlpha(BLUE, 0.5f));
+        }
     }
     else
     {
-        DrawCube(Vector3{x0, y0 + yb * 0.75f, z0}, xb * 2, yb * 0.5f, zb * 2, ColorAlpha(RED, 0.5f));
-        DrawCube(Vector3{x0, y0 - yb * 0.75f, z0}, xb * 2, yb * 0.5f, zb * 2, ColorAlpha(BLUE, 0.5f));
+        DrawCube(Vector3{x0, y0, z0}, xb * 2, yb, zb * 2, ColorAlpha(WHITE, 0.5f));
+        if (M0 > 0)
+        {
+            DrawCube(Vector3{x0, y0 + yb * 0.75f, z0}, xb * 2, yb * 0.5f, zb * 2, ColorAlpha(BLUE, 0.5f));
+            DrawCube(Vector3{x0, y0 - yb * 0.75f, z0}, xb * 2, yb * 0.5f, zb * 2, ColorAlpha(RED, 0.5f));
+        }
+        else
+        {
+            DrawCube(Vector3{x0, y0 + yb * 0.75f, z0}, xb * 2, yb * 0.5f, zb * 2, ColorAlpha(RED, 0.5f));
+            DrawCube(Vector3{x0, y0 - yb * 0.75f, z0}, xb * 2, yb * 0.5f, zb * 2, ColorAlpha(BLUE, 0.5f));
+        }
     }
 
     DrawCubeWires(Vector3{x0, y0, z0}, xb * 2, yb * 2, zb * 2, GRAY);
@@ -75,5 +96,12 @@ Vector3 Magnet::computeMagneticField(float x, float y, float z)
             }
     Hz *= M0 / (4 * PI);
 
-    return Vector3{Hx, Hy, Hz};
+    if (flat)
+    {
+        return Vector3{Hy, -Hx, Hz};
+    }
+    else
+    {
+        return Vector3{Hx, Hy, Hz};
+    }
 }

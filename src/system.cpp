@@ -35,18 +35,20 @@ void System::drawVectorField(float displacement)
         for (float y = -20; y < 20; y += 1)
         {
             // Vector3 origin = {x + 0.001f, y + 0.001f, 0.001f};
-            Vector3 origin = {x + 0.001f, y + 0.001f, ((float)sin(GetTime() * 0.25f) * 2.5f) * displacement};
+            float cz = ((float)sin(GetTime() * 0.25f) * 2.5f) * displacement;
+            Vector3 origin = {x + 0.001f, y + 0.001f, cz};
 
             Vector3 field = globalVectorField(origin.x, origin.y, origin.z);
 
             Vector3 target = {
                 field.x,
                 field.y,
-                field.z};
+                0
+                };
             float length = Vector3Length(target);
             target = Vector3Scale(Vector3Normalize(target), std::max(0.1f, log(100.0f * length)));
 
-            DrawArrow3D(origin, Vector3Add(origin, target), target.z > 0 ? RED : BLUE);
+            DrawArrow3D(origin, Vector3Add(origin, target), PINK);
         }
 }
 void System::drawTeslaPlane(bool side, float displacement)
@@ -104,7 +106,7 @@ void System::computeFieldLines(float displacement)
 
     for (auto m : magnets)
         for (float x = m.x0 - (m.xb + 0.2f); x <= m.x0 + (m.xb + 0.2f); x += 0.2f)
-            for (float y = m.y0 - (m.yb + 0.2f); y <= m.y0 + (m.yb + 0.2f); y += 0.2f)      
+            for (float y = m.y0 - (m.yb + 0.2f); y <= m.y0 + (m.yb + 0.2f); y += 0.2f)
             {
                 Vector3 linePos = {x, y, zpos};
                 std::vector<Vector3> line = {linePos};
@@ -136,8 +138,8 @@ void System::computeFieldLines(float displacement)
                 if (ended && line.size() > 10)
                     fieldLines.push_back(line);
             }
-    zpos+= 0.5f;
-}       
+    zpos += 0.5f;
+}
 void System::drawFieldLines()
 {
     for (size_t i = 0; i < fieldLines.size(); i++)
@@ -149,7 +151,7 @@ void System::drawFieldLines()
         for (size_t j = 0; j < line.size(); j++)
         {
             auto point = line[j];
-            // point.z = 0.0f;        
+            // point.z = 0.0f;
             DrawLine3D(prev, point, lerpC(WHITE, BLUE, (float)j / line.size()));
             prev = point;
         }

@@ -34,8 +34,14 @@ int main(void)
     CustomCamera camera = CustomCamera(100);
 
     System system = System();
-    system.registerMagnet(Magnet({4, 0, 0}, {4, 10, 4}, 1.0f));
-    system.registerMagnet(Magnet({-4, 0, 0}, {4, 10, 4}, -1.0f));
+    system.registerMagnet(Magnet({4.5 * -3, 0, 0}, {4, 6, 4}, 1, false));
+    system.registerMagnet(Magnet({4.5 * -2, 0, 0}, {4, 6, 4}, -1.0f, true));
+    system.registerMagnet(Magnet({4.5 * -1, 0, 0}, {4, 6, 4}, -1.0f, false));
+    system.registerMagnet(Magnet({4.5 * 0, 0, 0}, {4, 6, 4}, 1, true));
+    system.registerMagnet(Magnet({4.5 * 1, 0, 0}, {4, 6, 4}, 1, false));
+    system.registerMagnet(Magnet({4.5 * 2, 0, 0}, {4, 6, 4}, -1.0f, true));
+    system.registerMagnet(Magnet({4.5 * 3, 0, 0}, {4, 6, 4}, -1.0f, false));
+    // system.registerMagnet(Magnet({4, 0, 0}, {4, 10, 4}, 1, false));
 
     // magnet.computeFieldLines(0);
 
@@ -67,7 +73,7 @@ int main(void)
 
         if (IsKeyPressed(KEY_SPACE))
         {     
-            system.computeFieldLines(system.magnets[0].zb);
+            // system.computeFieldLines(system.magnets[0].zb);
         }
         if (IsKeyDown(KEY_SPACE))
         {
