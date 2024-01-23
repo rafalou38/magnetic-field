@@ -56,16 +56,16 @@ void CustomCamera::update(int width, int height)
         changed = true;
     }
 
-    float scroll = GetMouseWheelMove();
-    if (scroll != 0)
-    {
-        if (scroll > 0)
-            distance *= 0.9;
-        else
-            distance *= 1.1;
+    // float scroll = GetMouseWheelMove();
+    // if (scroll != 0)
+    // {
+    //     if (scroll > 0)
+    //         distance *= 0.9;
+    //     else
+    //         distance *= 1.1;
         
-        changed = true;
-    }
+    //     changed = true;
+    // }
 
     if (changed)
         syncPosition();

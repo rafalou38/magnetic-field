@@ -29,13 +29,11 @@ void System::drawMagnets()
         magnet.draw();
     }
 }
-void System::drawVectorField(float displacement)
+void System::drawVectorField(float cz)
 {
     for (float x = -20; x < 20; x += 1)
         for (float y = -20; y < 20; y += 1)
         {
-            // Vector3 origin = {x + 0.001f, y + 0.001f, 0.001f};
-            float cz = ((float)sin(GetTime() * 0.25f) * 2.5f) * displacement;
             Vector3 origin = {x + 0.001f, y + 0.001f, cz};
 
             Vector3 field = globalVectorField(origin.x, origin.y, origin.z);
@@ -46,12 +44,12 @@ void System::drawVectorField(float displacement)
                 0
                 };
             float length = Vector3Length(target);
-            target = Vector3Scale(Vector3Normalize(target), std::max(0.1f, log(100.0f * length)));
+            target = Vector3Scale(Vector3Normalize(target), std::min(1.0f, std::max(0.2f, log(100.0f * length))));
 
             DrawArrow3D(origin, Vector3Add(origin, target), PINK);
         }
 }
-void System::drawTeslaPlane(bool side, float displacement)
+void System::drawTeslaPlane(bool side, float pos)
 {
     float d = 0.4f;
     for (float i = -20; i < 20; i += d)
@@ -59,9 +57,9 @@ void System::drawTeslaPlane(bool side, float displacement)
         {
             Vector3 origin;
             if (side)
-                origin = {i + 0.001f, j + 0.001f, ((float)sin(GetTime() * 0.25f) * 2.5f) * displacement};
+                origin = {i + 0.001f, j + 0.001f, pos};
             else
-                origin = {i + 0.001f, ((float)sin(GetTime() * 0.25f) * 2.5f) * displacement, j + 0.001f};
+                origin = {i + 0.001f, pos, j + 0.001f};
 
             Vector3 field = globalVectorField(origin.x, origin.y, origin.z);
 

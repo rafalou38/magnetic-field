@@ -34,17 +34,22 @@ int main(void)
     CustomCamera camera = CustomCamera(100);
 
     System system = System();
-    system.registerMagnet(Magnet({4.5 * -3, 0, 0}, {4, 6, 4}, 1, false));
-    system.registerMagnet(Magnet({4.5 * -2, 0, 0}, {4, 6, 4}, -1.0f, true));
-    system.registerMagnet(Magnet({4.5 * -1, 0, 0}, {4, 6, 4}, -1.0f, false));
-    system.registerMagnet(Magnet({4.5 * 0, 0, 0}, {4, 6, 4}, 1, true));
-    system.registerMagnet(Magnet({4.5 * 1, 0, 0}, {4, 6, 4}, 1, false));
-    system.registerMagnet(Magnet({4.5 * 2, 0, 0}, {4, 6, 4}, -1.0f, true));
-    system.registerMagnet(Magnet({4.5 * 3, 0, 0}, {4, 6, 4}, -1.0f, false));
+
+    system.registerMagnet(Magnet({0, 0, 0}, {4, 6, 4}, 1, false));
+    // system.registerMagnet(Magnet({5, 0, 0}, {4, 6, 4}, -1, false));
+
+    // system.registerMagnet(Magnet({4.5 * -3, 0, 0}, {4, 6, 4}, 1, false));
+    // system.registerMagnet(Magnet({4.5 * -2, 0, 0}, {4, 6, 4}, -1.0f, true));
+    // system.registerMagnet(Magnet({4.5 * -1, 0, 0}, {4, 6, 4}, -1.0f, false));
+    // system.registerMagnet(Magnet({4.5 * 0, 0, 0}, {4, 6, 4}, 1, true));
+    // system.registerMagnet(Magnet({4.5 * 1, 0, 0}, {4, 6, 4}, 1, false));
+    // system.registerMagnet(Magnet({4.5 * 2, 0, 0}, {4, 6, 4}, -1.0f, true));
+    // system.registerMagnet(Magnet({4.5 * 3, 0, 0}, {4, 6, 4}, -1.0f, false));
     // system.registerMagnet(Magnet({4, 0, 0}, {4, 10, 4}, 1, false));
 
     // magnet.computeFieldLines(0);
-
+    float cursorFactor = 0.001;
+    float cursorFactorVec = 0.001;
     // Main game loop
     while (!WindowShouldClose())
     {
@@ -71,8 +76,13 @@ int main(void)
         // for (float z = -20; z < 20; x += 2)
         // std::cout << magnet.xb << std::endl;
 
+        if (IsKeyDown(KEY_LEFT_CONTROL))
+            cursorFactorVec += GetMouseWheelMove() / 2;
+        else
+            cursorFactor += GetMouseWheelMove() / 2;
+
         if (IsKeyPressed(KEY_SPACE))
-        {     
+        {
             // system.computeFieldLines(system.magnets[0].zb);
         }
         if (IsKeyDown(KEY_SPACE))
@@ -83,8 +93,9 @@ int main(void)
         }
         else
         {
-            system.drawTeslaPlane(false, system.magnets[0].yb);
-            system.drawTeslaPlane(true, system.magnets[0].yb);
+            system.drawVectorField(cursorFactorVec);
+            system.drawTeslaPlane(false, cursorFactor);
+            // system.drawTeslaPlane(true, cursorFactor);
         }
 
         system.drawMagnets();
